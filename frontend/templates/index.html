@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Text Generator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        textarea {
+            width: 100%;
+            height: 100px;
+            padding: 10px;
+        }
+
+        .slider-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        #output {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            min-height: 50px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>SmoLM2 Text Generator</h1>
+        <textarea id="input" placeholder="Enter your text here..."></textarea>
+        <div class="slider-container">
+            <label for="seqLength">Sequence Length:</label>
+            <input type="range" id="seqLength" min="10" max="100" value="50">
+            <span id="seqLengthValue">50</span>
+        </div>
+        <button onclick="generateText()">Generate</button>
+        <div id="output"></div>
+    </div>
+
+    <script>
+        const seqLength = document.getElementById('seqLength');
+        const seqLengthValue = document.getElementById('seqLengthValue');
+
+        seqLength.oninput = function () {
+            seqLengthValue.textContent = this.value;
+        }
+
+        async function generateText() {
+            const text = document.getElementById('input').value;
+            const length = seqLength.value;
+            const output = document.getElementById('output');
+
+            output.textContent = 'Generating...';
+
+            try {
+                const response = await fetch('/generate', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        text: text,
+                        seq_length: parseInt(length)
+                    })
+                });
+
+                const data = await response.json();
+                output.textContent = data.generated_text;
+            } catch (error) {
+                output.textContent = 'Error generating text';
+                console.error('Error:', error);
+            }
+        }
+    </script>
+</body>
+
+</html>
