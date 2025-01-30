@@ -25,10 +25,14 @@ async def read_root(request: Request):
 
 
 @app.post("/generate")
-async def generate_text(
-    request: Request, text: str = Form(...), seq_length: int = Form(...)
-):
-    async with httpx.AsyncClient() as client:
+async def generate_text(request: Request):
+    # Get JSON data from request
+    data = await request.json()
+    print("User Input: ", data)
+    text = data.get("text")
+    seq_length = data.get("seq_length")
+
+    async with httpx.AsyncClient(timeout=50.0) as client:
         response = await client.post(
             "http://backend:8000/predict", json={"text": text, "seq_length": seq_length}
         )
