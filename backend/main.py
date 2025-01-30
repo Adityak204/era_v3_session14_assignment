@@ -80,6 +80,11 @@ def generate_prediction(model, prompt, max_length=100):
     return {"prediction": generated_text}
 
 
+@app.get("/")
+async def read_root():
+    return {"Welcome": "to the SmolLM2 API!"}
+
+
 @app.post("/predict")
 async def predict(request: GenerateRequest):
     return generate_prediction(model, request.text, request.seq_length)
