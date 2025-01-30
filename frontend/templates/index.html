@@ -79,7 +79,7 @@
                 });
 
                 const data = await response.json();
-                output.textContent = data.generated_text;
+                output.textContent = data.prediction;
             } catch (error) {
                 output.textContent = 'Error generating text';
                 console.error('Error:', error);
